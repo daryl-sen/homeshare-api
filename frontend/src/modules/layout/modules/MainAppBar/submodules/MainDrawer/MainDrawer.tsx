@@ -23,7 +23,7 @@ export default function MainDrawer({ isOpen, setIsOpen }: MainDrawerProps) {
           sx={{
             textAlign: "right",
             mb: 2,
-            fontSize: "1.8em",
+            fontSize: "1.5em",
           }}
         >
           APPLICATIONS

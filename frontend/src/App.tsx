@@ -7,7 +7,7 @@ import "./App.css";
 import { lightTheme } from "./themes";
 
 function App() {
-  const [theme, setTheme] = useState(lightTheme);
+  const [theme] = useState(lightTheme);
 
   return (
     <div className="App">
