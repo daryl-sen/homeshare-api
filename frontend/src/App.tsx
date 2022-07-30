@@ -1,11 +1,21 @@
-import React from "react";
+import React, { useState } from "react";
+import { ThemeProvider } from "@mui/material/styles";
+import Container from "@mui/material/Container";
 
 import MainAppBar from "./modules/layout/modules/MainAppBar/MainAppBar";
+import "./App.css";
+import { lightTheme } from "./themes";
 
 function App() {
+  const [theme, setTheme] = useState(lightTheme);
+
   return (
     <div className="App">
-      <MainAppBar />
+      <ThemeProvider theme={theme}>
+        <Container>
+          <MainAppBar />
+        </Container>
+      </ThemeProvider>
     </div>
   );
 }
