@@ -18,22 +18,17 @@ interface MainDrawerProps {
 export default function MainDrawer({ isOpen, setIsOpen }: MainDrawerProps) {
   return (
     <Drawer open={isOpen} onClose={setIsOpen}>
-      <Stack
-        p={2}
-        sx={{ height: "100%" }}
-        justifyContent={"center"}
-        divider={<Divider />}
-      >
+      <Stack p={2} sx={{ height: "100%" }} justifyContent={"center"}>
         <Typography
           sx={{
             textAlign: "right",
             mb: 2,
-            fontWeight: "bold",
             fontSize: "1.8em",
           }}
         >
-          Applications
+          APPLICATIONS
         </Typography>
+        <Divider />
         <NavigationButton icon={<HomeIcon />}>Dashboard</NavigationButton>
         <NavigationButton icon={<CloudCircleIcon />}>
           File Storage
