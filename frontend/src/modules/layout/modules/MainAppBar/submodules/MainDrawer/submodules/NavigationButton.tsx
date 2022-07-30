@@ -11,7 +11,10 @@ export default function NavigationButton({
   icon,
 }: NavigationButtonProps) {
   return (
-    <Button endIcon={icon} sx={{ justifyContent: "flex-end" }}>
+    <Button
+      endIcon={icon}
+      sx={{ justifyContent: "flex-end", fontSize: "1.5em" }}
+    >
       {children}
     </Button>
   );

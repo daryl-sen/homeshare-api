@@ -29,7 +29,7 @@ export default function MainDrawer({ isOpen, setIsOpen }: MainDrawerProps) {
             textAlign: "right",
             mb: 2,
             fontWeight: "bold",
-            fontSize: "1.2em",
+            fontSize: "1.8em",
           }}
         >
           Applications
