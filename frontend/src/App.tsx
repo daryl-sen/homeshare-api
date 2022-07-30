@@ -1,5 +1,4 @@
 import React from "react";
-import "./App.css";
 
 import MainAppBar from "./modules/layout/modules/MainAppBar/MainAppBar";
 
