@@ -6,7 +6,7 @@ import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
 import IconButton from "@mui/material/IconButton";
 import MenuIcon from "@mui/icons-material/Menu";
-import MainDrawer from "../MainDrawer/MainDrawer";
+import MainDrawer from "./submodules/MainDrawer/MainDrawer";
 
 export default function MainAppBar() {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
@@ -27,7 +27,10 @@ export default function MainAppBar() {
             >
               <MenuIcon />
             </IconButton>
-            <Typography variant="subtitle1" sx={{ flexGrow: 1 }}>
+            <Typography
+              variant="subtitle1"
+              sx={{ flexGrow: 1, textAlign: "center" }}
+            >
               HomeShare
             </Typography>
             <Button color="inherit">Login</Button>
