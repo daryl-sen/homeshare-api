@@ -36,16 +36,19 @@ export default function GalleryModal() {
           <Typography sx={captionStyle}>image_name.jpg</Typography>
           <Stack spacing={1} direction={"row"}>
             <Chip
+              size={"small"}
               label={"tag 1"}
               deleteIcon={<ClearIcon fontSize={"small"} />}
               onDelete={() => console.log("delete")}
             />
             <Chip
+              size={"small"}
               label={"tag 2"}
               deleteIcon={<ClearIcon fontSize={"small"} />}
               onDelete={() => console.log("delete")}
             />
             <Chip
+              size={"small"}
               label={"tag 3"}
               deleteIcon={<ClearIcon fontSize={"small"} />}
               onDelete={() => console.log("delete")}
