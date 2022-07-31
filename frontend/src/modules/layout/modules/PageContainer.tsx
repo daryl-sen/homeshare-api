@@ -11,7 +11,11 @@ export default function PageContainer({
   textAlignment,
 }: PageContainerProps) {
   const PageContainerStyle = {
-    p: 2,
+    p: {
+      xs: 2,
+      sm: 6,
+      md: 8,
+    },
     textAlign: textAlignment ?? "left",
   };
   return <Container sx={PageContainerStyle}>{children}</Container>;
