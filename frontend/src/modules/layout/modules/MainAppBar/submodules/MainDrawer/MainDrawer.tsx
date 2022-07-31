@@ -9,6 +9,7 @@ import VpnKeyIcon from "@mui/icons-material/VpnKey";
 import Typography from "@mui/material/Typography";
 import Divider from "@mui/material/Divider";
 import PlaylistAddCheckIcon from "@mui/icons-material/PlaylistAddCheck";
+import { useNavigate } from "react-router-dom";
 
 interface MainDrawerProps {
   isOpen: boolean;
@@ -16,6 +17,8 @@ interface MainDrawerProps {
 }
 
 export default function MainDrawer({ isOpen, setIsOpen }: MainDrawerProps) {
+  const navigate = useNavigate();
+
   return (
     <Drawer open={isOpen} onClose={setIsOpen}>
       <Stack p={2} sx={{ height: "100%" }} justifyContent={"center"}>
@@ -29,15 +32,49 @@ export default function MainDrawer({ isOpen, setIsOpen }: MainDrawerProps) {
           APPLICATIONS
         </Typography>
         <Divider />
-        <NavigationButton icon={<HomeIcon />}>Dashboard</NavigationButton>
-        <NavigationButton icon={<CloudCircleIcon />}>
+        <NavigationButton
+          handleClick={() => {
+            navigate("/");
+            setIsOpen();
+          }}
+          icon={<HomeIcon />}
+        >
+          Dashboard
+        </NavigationButton>
+        <NavigationButton
+          handleClick={() => {
+            navigate("/file-storage");
+            setIsOpen();
+          }}
+          icon={<CloudCircleIcon />}
+        >
           File Storage
         </NavigationButton>
-        <NavigationButton icon={<ContentPasteIcon />}>
+        <NavigationButton
+          handleClick={() => {
+            navigate("/shared-clipboard");
+            setIsOpen();
+          }}
+          icon={<ContentPasteIcon />}
+        >
           Clipboard
         </NavigationButton>
-        <NavigationButton icon={<VpnKeyIcon />}>Passwords</NavigationButton>
-        <NavigationButton icon={<PlaylistAddCheckIcon />}>
+        <NavigationButton
+          handleClick={() => {
+            navigate("/password-manager");
+            setIsOpen();
+          }}
+          icon={<VpnKeyIcon />}
+        >
+          Passwords
+        </NavigationButton>
+        <NavigationButton
+          handleClick={() => {
+            navigate("/todo");
+            setIsOpen();
+          }}
+          icon={<PlaylistAddCheckIcon />}
+        >
           Todo
         </NavigationButton>
       </Stack>
