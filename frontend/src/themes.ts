@@ -30,7 +30,7 @@ export const lightTheme = createTheme({
       defaultProps: {
         sx: {
           height: "100%",
-          backgroundColor: "#e0e0e0",
+          backgroundColor: "#ffffff",
         },
         disableGutters: true,
         maxWidth: false,
@@ -57,6 +57,13 @@ export const lightTheme = createTheme({
         sx: {
           mt: 1,
           mb: 1,
+        },
+      },
+    },
+    MuiAppBar: {
+      defaultProps: {
+        sx: {
+          p: 0,
         },
       },
     },
