@@ -36,7 +36,7 @@ export default function FileStorage() {
         </Grid>
       </Grid>
       <Grid container spacing={4} alignItems={"center"}>
-        <Grid item xs={6}>
+        <Grid item md={6} xs={12}>
           <Typography variant={"h2"}>Save or Share</Typography>
           <Typography variant={"body1"}>
             Offload your files into the local cloud and free up precious storage
@@ -49,13 +49,13 @@ export default function FileStorage() {
             previews coming soon!
           </Typography>
         </Grid>
-        <Grid item xs={6}>
+        <Grid item md={6} xs={12}>
           <Paper>
             <Typography variant="h2" sx={{ textAlign: "center" }}>
               Storage Stats
             </Typography>
             <Grid container spacing={1} alignItems={"center"}>
-              <Grid item xs={4}>
+              <Grid item xs={12} sm={4}>
                 <Typography sx={statsHeaderStyle}>
                   Capacity Used <br />
                   (Your Files)
@@ -63,7 +63,7 @@ export default function FileStorage() {
                 <Typography sx={statsValueStyle}>99</Typography>
                 <Typography sx={statsUnitStyle}>GB</Typography>
               </Grid>
-              <Grid item xs={4}>
+              <Grid item xs={12} sm={4}>
                 <Typography sx={statsHeaderStyle}>
                   Capacity Remaining <br />
                   (Your Limit)
@@ -71,7 +71,7 @@ export default function FileStorage() {
                 <Typography sx={statsValueStyle}>200</Typography>
                 <Typography sx={statsUnitStyle}>GB</Typography>
               </Grid>
-              <Grid item xs={4}>
+              <Grid item xs={12} sm={4}>
                 <Typography sx={statsHeaderStyle}>
                   Capacity Remaining <br />
                   (System Limit)
