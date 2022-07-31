@@ -15,7 +15,7 @@ export default function NavigationButton({
   return (
     <Button
       endIcon={icon}
-      sx={{ justifyContent: "flex-end", fontSize: "1.5em" }}
+      sx={{ justifyContent: "flex-end", fontSize: "1.2em" }}
       onClick={handleClick}
     >
       {children}
