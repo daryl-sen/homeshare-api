@@ -9,6 +9,8 @@ import SummaryTab from "./tabs/SummaryTab";
 import PhotosAndVideosTab from "./tabs/PhotosAndVideosTab";
 import FilesTab from "./tabs/FilesTab";
 
+const tabsStyle = { backgroundColor: "#e6e6e6" };
+
 const renderTab = (selectedTabIndex: number) => {
   switch (selectedTabIndex) {
     case 0:
@@ -34,7 +36,7 @@ export default function FileStorage() {
         value={selectedTabInxex}
         onChange={handleTabChange}
         centered
-        sx={{ backgroundColor: "white" }}
+        sx={tabsStyle}
       >
         <Tab label={"Summary"} />
         <Tab label={"Photos"} />
