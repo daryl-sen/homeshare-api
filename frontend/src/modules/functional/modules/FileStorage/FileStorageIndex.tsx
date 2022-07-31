@@ -1,5 +1,6 @@
+import PageContainer from "../../../layout/modules/PageContainer";
 import React from "react";
 
 export default function FileStorage() {
-  return <>File Storage</>;
+  return <PageContainer>File Storage</PageContainer>;
 }

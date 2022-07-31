@@ -2,6 +2,11 @@ import { createTheme } from "@mui/material/styles";
 
 export const lightTheme = createTheme({
   typography: {
+    h1: {
+      fontSize: "1.8em",
+      marginBottom: 8,
+    },
+    // used for appbar header
     subtitle1: {
       fontSize: "1.5em",
     },
