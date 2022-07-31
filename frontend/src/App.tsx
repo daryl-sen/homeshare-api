@@ -1,21 +1,26 @@
 import React, { useState } from "react";
 import { ThemeProvider } from "@mui/material/styles";
 import Container from "@mui/material/Container";
+import { BrowserRouter } from "react-router-dom";
 
 import MainAppBar from "./modules/layout/modules/MainAppBar/MainAppBar";
 import "./App.css";
 import { lightTheme } from "./themes";
+import Router from "./Router";
 
 function App() {
   const [theme] = useState(lightTheme);
 
   return (
     <div className="App">
-      <ThemeProvider theme={theme}>
-        <Container>
-          <MainAppBar />
-        </Container>
-      </ThemeProvider>
+      <BrowserRouter>
+        <ThemeProvider theme={theme}>
+          <Container>
+            <MainAppBar />
+            <Router />
+          </Container>
+        </ThemeProvider>
+      </BrowserRouter>
     </div>
   );
 }
