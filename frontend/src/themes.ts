@@ -4,7 +4,7 @@ export const lightTheme = createTheme({
   typography: {
     h1: {
       fontSize: "2em",
-      marginBottom: "2em",
+      marginBottom: "1em",
     },
     h2: {
       fontSize: "1.5em",
@@ -13,6 +13,7 @@ export const lightTheme = createTheme({
     },
     h3: {
       fontSize: "1.2em",
+      marginBottom: "1em",
     },
     body1: {
       marginBottom: "0.5em",
