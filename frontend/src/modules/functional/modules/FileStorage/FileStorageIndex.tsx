@@ -6,15 +6,17 @@ import CloudCircleIcon from "@mui/icons-material/CloudCircle";
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
 import SummaryTab from "./tabs/SummaryTab";
+import PhotosAndVideosTab from "./tabs/PhotosAndVideosTab";
+import FilesTab from "./tabs/FilesTab";
 
 const renderTab = (selectedTabIndex: number) => {
   switch (selectedTabIndex) {
     case 0:
       return <SummaryTab />;
     case 1:
-      return <>Photos tab</>;
+      return <PhotosAndVideosTab />;
     case 2:
-      return <>Files tab</>;
+      return <FilesTab />;
     default:
       // TODO set default tab based on user preference
       return <SummaryTab />;
