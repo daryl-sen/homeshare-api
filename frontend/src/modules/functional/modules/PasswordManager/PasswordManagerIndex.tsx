@@ -1,5 +1,6 @@
+import PageContainer from "../../../layout/modules/PageContainer";
 import React from "react";
 
 export default function PasswordManager() {
-  return <>Password Manager</>;
+  return <PageContainer>Password Manager</PageContainer>;
 }
