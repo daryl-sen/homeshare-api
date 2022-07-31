@@ -29,7 +29,7 @@ export const lightTheme = createTheme({
     MuiContainer: {
       defaultProps: {
         sx: {
-          height: "100%",
+          minHeight: "100%",
           backgroundColor: "#ffffff",
         },
         disableGutters: true,
