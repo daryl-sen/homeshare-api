@@ -2,12 +2,17 @@ import React from "react";
 import Card from "@mui/material/Card";
 import Typography from "@mui/material/Typography";
 import Grid from "@mui/material/Grid";
+import Stack from "@mui/material/Stack";
+import MoreVertIcon from "@mui/icons-material/MoreVert";
+import IconButton from "@mui/material/IconButton";
 
-interface MediaThumbnailProps {
-  fileName: string;
-  fileSize: number;
-  fileId: string;
-}
+// TODO add props
+// interface MediaThumbnailProps {
+//   fileName: string;
+//   fileSize: number;
+//   filePath: string;
+//   fileId: string;
+// }
 
 const mediaThumbnailStyle = {
   p: 0,
@@ -16,6 +21,7 @@ const mediaThumbnailStyle = {
 const mediaThumbnailCaptionStyle = {
   fontSize: "0.8 em",
   p: 1,
+  pb: 0,
 };
 
 const renderPreview = () => {
@@ -36,7 +42,16 @@ export default function MediaThumbnail() {
     <Grid item sx={{ width: "200px", aspectRatio: "4/3" }}>
       <Card sx={mediaThumbnailStyle}>
         {renderPreview()}
-        <Typography sx={mediaThumbnailCaptionStyle}>File Name</Typography>
+        <Stack
+          direction={"row"}
+          alignItems={"center"}
+          justifyContent={"space-between"}
+        >
+          <Typography sx={mediaThumbnailCaptionStyle}>File Name</Typography>
+          <IconButton size={"small"} sx={{ ml: 2, mr: 0 }}>
+            <MoreVertIcon />
+          </IconButton>
+        </Stack>
       </Card>
     </Grid>
   );
