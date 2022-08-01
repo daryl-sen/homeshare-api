@@ -28,23 +28,19 @@ function ImagePlaceholder() {
 }
 
 export default function GalleryModal() {
-  const state = useMediaTabContext();
-  console.log(state);
+  const { isGalleryModalOpen, closeGalleryModal } = useMediaTabContext();
 
   const handleDeleteTag = () => {
     console.log("delete tag");
   };
 
-  const handleCloseModal = () => {
-    console.log("closing modal");
-  };
-
   return (
     <Dialog
-      open={state.isGalleryModalOpen}
+      open={isGalleryModalOpen}
       fullWidth
       maxWidth={"md"}
       PaperProps={{ sx: { p: 0 } }}
+      onClose={closeGalleryModal}
     >
       <ImagePlaceholder />
       <Grid
@@ -100,7 +96,7 @@ export default function GalleryModal() {
               <IconButton>
                 <DeleteIcon />
               </IconButton>
-              <IconButton onClick={handleCloseModal}>
+              <IconButton onClick={closeGalleryModal}>
                 <ClearIcon />
               </IconButton>
             </ButtonGroup>
