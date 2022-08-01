@@ -16,13 +16,11 @@ const renderMediaThumbnails = (mediaItems: string[]) => {
 
 export default function MediaSection({ name }: MediaSectionProps) {
   return (
-    <MediaTabContextProvider>
-      <Stack sx={{ mt: 2, mb: 2 }}>
-        <Typography variant={"h2"}>{name}</Typography>
-        <Grid container spacing={2}>
-          {renderMediaThumbnails(["file 1", "file 2"])}
-        </Grid>
-      </Stack>
-    </MediaTabContextProvider>
+    <Stack sx={{ mt: 2, mb: 2 }}>
+      <Typography variant={"h2"}>{name}</Typography>
+      <Grid container spacing={2}>
+        {renderMediaThumbnails(["file 1", "file 2"])}
+      </Grid>
+    </Stack>
   );
 }

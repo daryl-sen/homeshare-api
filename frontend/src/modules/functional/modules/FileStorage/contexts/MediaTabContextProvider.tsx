@@ -1,21 +1,21 @@
 import React, { useContext, useState, createContext } from "react";
 
-interface MediaTabContext {
+interface IMediaTabContext {
   selectedFileId: string | undefined;
   isGalleryModalOpen: boolean;
 }
 
-interface MediaTabReadOnlyContext {
+interface IMediaTabReadOnlyContext {
   openGalleryModal: (newFileId: string) => void;
   closeGalleryModal: () => void;
 }
 
-const MediaTabContext = createContext<MediaTabContext>({
+const MediaTabContext = createContext<IMediaTabContext>({
   selectedFileId: undefined,
   isGalleryModalOpen: false,
 });
 
-const MediaTabReadOnlyContext = createContext<MediaTabReadOnlyContext>({
+const MediaTabReadOnlyContext = createContext<IMediaTabReadOnlyContext>({
   openGalleryModal: (newFileId: string) => undefined,
   closeGalleryModal: () => undefined,
 });
@@ -33,28 +33,28 @@ export function MediaTabContextProvider({
 }: {
   children: JSX.Element;
 }) {
-  const [selectedFileId, setSelectedFileId] = useState<string | undefined>(
-    undefined
-  );
-  const [isGalleryModalOpen, setIsGalleryModalOpen] = useState<boolean>(false);
+  const [galleryModalState, setGalleryModalState] = useState({
+    isGalleryModalOpen: false,
+    selectedFileId: undefined,
+  });
 
   const openGalleryModal = (newFileId: string) => {
-    setSelectedFileId(newFileId);
-    setIsGalleryModalOpen(true);
+    console.log("opening");
+    setGalleryModalState({
+      isGalleryModalOpen: true,
+      selectedFileId: undefined,
+    });
   };
 
   const closeGalleryModal = () => {
-    setIsGalleryModalOpen(false);
-    setSelectedFileId(undefined);
+    setGalleryModalState({
+      isGalleryModalOpen: true,
+      selectedFileId: undefined,
+    });
   };
 
   return (
-    <MediaTabContext.Provider
-      value={{
-        selectedFileId,
-        isGalleryModalOpen,
-      }}
-    >
+    <MediaTabContext.Provider value={galleryModalState}>
       <MediaTabReadOnlyContext.Provider
         value={{ openGalleryModal, closeGalleryModal }}
       >

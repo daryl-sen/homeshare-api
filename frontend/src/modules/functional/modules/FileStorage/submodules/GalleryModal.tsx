@@ -28,7 +28,8 @@ function ImagePlaceholder() {
 }
 
 export default function GalleryModal() {
-  const { isGalleryModalOpen } = useMediaTabContext();
+  const state = useMediaTabContext();
+  console.log(state);
 
   const handleDeleteTag = () => {
     console.log("delete tag");
@@ -40,7 +41,7 @@ export default function GalleryModal() {
 
   return (
     <Dialog
-      open={isGalleryModalOpen}
+      open={state.isGalleryModalOpen}
       fullWidth
       maxWidth={"md"}
       PaperProps={{ sx: { p: 0 } }}
