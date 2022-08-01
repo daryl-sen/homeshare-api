@@ -5,15 +5,6 @@ import Grid from "@mui/material/Grid";
 import Stack from "@mui/material/Stack";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import IconButton from "@mui/material/IconButton";
-import GalleryModal from "./GalleryModal";
-
-// TODO add props
-// interface MediaThumbnailProps {
-//   fileName: string;
-//   fileSize: number;
-//   filePath: string;
-//   fileId: string;
-// }
 
 const mediaThumbnailStyle = {
   p: 0,
@@ -25,20 +16,20 @@ const mediaThumbnailCaptionStyle = {
   pb: 0,
 };
 
-const renderPreview = () => {
-  return (
-    <div
-      style={{
-        width: "100%",
-        height: "100px",
-        backgroundColor: "red",
-        aspectRatio: "4/3",
-      }}
-    ></div>
-  );
-};
-
 export default function MediaThumbnail() {
+  const renderPreview = () => {
+    return (
+      <div
+        style={{
+          width: "100%",
+          height: "100px",
+          backgroundColor: "red",
+          aspectRatio: "4/3",
+        }}
+      ></div>
+    );
+  };
+
   return (
     <>
       <Grid item sx={{ width: "200px", aspectRatio: "4/3" }}>
@@ -56,7 +47,6 @@ export default function MediaThumbnail() {
           </Stack>
         </Card>
       </Grid>
-      <GalleryModal />
     </>
   );
 }

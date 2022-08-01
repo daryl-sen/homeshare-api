@@ -2,6 +2,7 @@ import React from "react";
 import Grid from "@mui/material/Grid";
 import MediaSection from "../submodules/MediaSection";
 import Typography from "@mui/material/Typography";
+import GalleryModal from "../submodules/GalleryModal";
 
 export default function PhotosAndVideosTab() {
   return (
@@ -15,6 +16,7 @@ export default function PhotosAndVideosTab() {
           <MediaSection name={"Jul 30"} />
         </Grid>
       </Grid>
+      <GalleryModal />
     </>
   );
 }

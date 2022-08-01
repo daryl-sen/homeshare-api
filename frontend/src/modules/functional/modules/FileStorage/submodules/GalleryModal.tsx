@@ -4,9 +4,10 @@ import { Chip, Stack, Typography } from "@mui/material";
 import ButtonGroup from "@mui/material/ButtonGroup";
 import IconButton from "@mui/material/IconButton";
 import CheckBoxOutlineBlankIcon from "@mui/icons-material/CheckBoxOutlineBlank";
-import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import ClearIcon from "@mui/icons-material/Clear";
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
+import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 
 const captionStyle = {};
 
@@ -23,6 +24,14 @@ function ImagePlaceholder() {
 }
 
 export default function GalleryModal() {
+  const handleDeleteTag = () => {
+    console.log("delete tag");
+  };
+
+  const handleCloseModal = () => {
+    console.log("closing modal");
+  };
+
   return (
     <Dialog open={true} fullWidth maxWidth={"md"} PaperProps={{ sx: { p: 0 } }}>
       <ImagePlaceholder />
@@ -39,36 +48,41 @@ export default function GalleryModal() {
               size={"small"}
               label={"tag 1"}
               deleteIcon={<ClearIcon fontSize={"small"} />}
-              onDelete={() => console.log("delete")}
+              onDelete={handleDeleteTag}
             />
             <Chip
               size={"small"}
               label={"tag 2"}
               deleteIcon={<ClearIcon fontSize={"small"} />}
-              onDelete={() => console.log("delete")}
+              onDelete={handleDeleteTag}
             />
             <Chip
               size={"small"}
               label={"tag 3"}
               deleteIcon={<ClearIcon fontSize={"small"} />}
-              onDelete={() => console.log("delete")}
+              onDelete={handleDeleteTag}
             />
           </Stack>
         </Stack>
-        <ButtonGroup variant={"outlined"}>
+        <Stack spacing={3} direction={"row"}>
           <IconButton>
-            <CheckBoxOutlineBlankIcon />
+            <ArrowBackIcon />
           </IconButton>
+          <ButtonGroup variant={"contained"}>
+            <IconButton>
+              <CheckBoxOutlineBlankIcon />
+            </IconButton>
+            <IconButton>
+              <DeleteIcon />
+            </IconButton>
+            <IconButton onClick={handleCloseModal}>
+              <ClearIcon />
+            </IconButton>
+          </ButtonGroup>
           <IconButton>
-            <EditIcon />
+            <ArrowForwardIcon />
           </IconButton>
-          <IconButton>
-            <DeleteIcon />
-          </IconButton>
-          <IconButton>
-            <ClearIcon />
-          </IconButton>
-        </ButtonGroup>
+        </Stack>
       </Stack>
     </Dialog>
   );
