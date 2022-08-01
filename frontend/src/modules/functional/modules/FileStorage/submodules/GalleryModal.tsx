@@ -8,6 +8,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import ClearIcon from "@mui/icons-material/Clear";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
+import Grid from "@mui/material/Grid";
 
 const captionStyle = {};
 
@@ -35,55 +36,69 @@ export default function GalleryModal() {
   return (
     <Dialog open={true} fullWidth maxWidth={"md"} PaperProps={{ sx: { p: 0 } }}>
       <ImagePlaceholder />
-      <Stack
-        direction={"row"}
+      <Grid
+        container
         alignItems={"flex-end"}
         justifyContent={"space-between"}
         sx={{ p: 2 }}
+        spacing={2}
       >
-        <Stack>
-          <Typography sx={captionStyle}>image_name.jpg</Typography>
-          <Stack spacing={1} direction={"row"}>
-            <Chip
-              size={"small"}
-              label={"tag 1"}
-              deleteIcon={<ClearIcon fontSize={"small"} />}
-              onDelete={handleDeleteTag}
-            />
-            <Chip
-              size={"small"}
-              label={"tag 2"}
-              deleteIcon={<ClearIcon fontSize={"small"} />}
-              onDelete={handleDeleteTag}
-            />
-            <Chip
-              size={"small"}
-              label={"tag 3"}
-              deleteIcon={<ClearIcon fontSize={"small"} />}
-              onDelete={handleDeleteTag}
-            />
+        <Grid item xs={12} sm={6}>
+          <Stack>
+            <Typography sx={captionStyle}>image_name.jpg</Typography>
+            <Stack spacing={1} direction={"row"}>
+              <Chip
+                size={"small"}
+                label={"tag 1"}
+                deleteIcon={<ClearIcon fontSize={"small"} />}
+                onDelete={handleDeleteTag}
+              />
+              <Chip
+                size={"small"}
+                label={"tag 2"}
+                deleteIcon={<ClearIcon fontSize={"small"} />}
+                onDelete={handleDeleteTag}
+              />
+              <Chip
+                size={"small"}
+                label={"tag 3"}
+                deleteIcon={<ClearIcon fontSize={"small"} />}
+                onDelete={handleDeleteTag}
+              />
+            </Stack>
           </Stack>
-        </Stack>
-        <Stack spacing={3} direction={"row"}>
-          <IconButton>
-            <ArrowBackIcon />
-          </IconButton>
-          <ButtonGroup variant={"contained"}>
+        </Grid>
+        <Grid item xs={12} sm={6}>
+          <Stack
+            spacing={3}
+            direction={"row"}
+            sx={{
+              justifyContent: {
+                xs: "space-between",
+                sm: "flex-end",
+              },
+            }}
+          >
             <IconButton>
-              <CheckBoxOutlineBlankIcon />
+              <ArrowBackIcon />
             </IconButton>
+            <ButtonGroup variant={"contained"}>
+              <IconButton>
+                <CheckBoxOutlineBlankIcon />
+              </IconButton>
+              <IconButton>
+                <DeleteIcon />
+              </IconButton>
+              <IconButton onClick={handleCloseModal}>
+                <ClearIcon />
+              </IconButton>
+            </ButtonGroup>
             <IconButton>
-              <DeleteIcon />
+              <ArrowForwardIcon />
             </IconButton>
-            <IconButton onClick={handleCloseModal}>
-              <ClearIcon />
-            </IconButton>
-          </ButtonGroup>
-          <IconButton>
-            <ArrowForwardIcon />
-          </IconButton>
-        </Stack>
-      </Stack>
+          </Stack>
+        </Grid>
+      </Grid>
     </Dialog>
   );
 }
