@@ -10,7 +10,7 @@ interface MediaSectionProps {
 
 // TODO clarify mediaItems type
 const renderMediaThumbnails = (mediaItems: string[]) => {
-  return mediaItems.map((item) => <MediaThumbnail />);
+  return mediaItems.map((item) => <MediaThumbnail key={item} />);
 };
 
 export default function MediaSection({ name }: MediaSectionProps) {

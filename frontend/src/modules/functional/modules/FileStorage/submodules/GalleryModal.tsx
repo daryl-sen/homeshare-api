@@ -9,13 +9,16 @@ import ClearIcon from "@mui/icons-material/Clear";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import Grid from "@mui/material/Grid";
+import CardMedia from "@mui/material/CardMedia";
+import { useMediaTabContext } from "../contexts/MediaTabContextProvider";
 
 const captionStyle = {};
 
 function ImagePlaceholder() {
   return (
-    <div
-      style={{
+    <CardMedia
+      component={"div"}
+      sx={{
         backgroundColor: "red",
         width: "100%",
         aspectRatio: "4/3",
@@ -25,16 +28,20 @@ function ImagePlaceholder() {
 }
 
 export default function GalleryModal() {
+  const { isGalleryModalOpen, closeGalleryModal } = useMediaTabContext();
+
   const handleDeleteTag = () => {
     console.log("delete tag");
   };
 
-  const handleCloseModal = () => {
-    console.log("closing modal");
-  };
-
   return (
-    <Dialog open={true} fullWidth maxWidth={"md"} PaperProps={{ sx: { p: 0 } }}>
+    <Dialog
+      open={isGalleryModalOpen}
+      fullWidth
+      maxWidth={"md"}
+      PaperProps={{ sx: { p: 0 } }}
+      onClose={closeGalleryModal}
+    >
       <ImagePlaceholder />
       <Grid
         container
@@ -79,9 +86,14 @@ export default function GalleryModal() {
               },
             }}
           >
-            <IconButton>
-              <ArrowBackIcon />
-            </IconButton>
+            <ButtonGroup variant={"contained"}>
+              <IconButton>
+                <ArrowBackIcon />
+              </IconButton>
+              <IconButton>
+                <ArrowForwardIcon />
+              </IconButton>
+            </ButtonGroup>
             <ButtonGroup variant={"contained"}>
               <IconButton>
                 <CheckBoxOutlineBlankIcon />
@@ -89,13 +101,10 @@ export default function GalleryModal() {
               <IconButton>
                 <DeleteIcon />
               </IconButton>
-              <IconButton onClick={handleCloseModal}>
+              <IconButton onClick={closeGalleryModal}>
                 <ClearIcon />
               </IconButton>
             </ButtonGroup>
-            <IconButton>
-              <ArrowForwardIcon />
-            </IconButton>
           </Stack>
         </Grid>
       </Grid>
