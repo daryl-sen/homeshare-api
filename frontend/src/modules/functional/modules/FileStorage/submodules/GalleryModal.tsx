@@ -86,9 +86,14 @@ export default function GalleryModal() {
               },
             }}
           >
-            <IconButton>
-              <ArrowBackIcon />
-            </IconButton>
+            <ButtonGroup variant={"contained"}>
+              <IconButton>
+                <ArrowBackIcon />
+              </IconButton>
+              <IconButton>
+                <ArrowForwardIcon />
+              </IconButton>
+            </ButtonGroup>
             <ButtonGroup variant={"contained"}>
               <IconButton>
                 <CheckBoxOutlineBlankIcon />
@@ -100,9 +105,6 @@ export default function GalleryModal() {
                 <ClearIcon />
               </IconButton>
             </ButtonGroup>
-            <IconButton>
-              <ArrowForwardIcon />
-            </IconButton>
           </Stack>
         </Grid>
       </Grid>
