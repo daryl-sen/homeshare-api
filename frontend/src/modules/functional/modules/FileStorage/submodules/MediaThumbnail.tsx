@@ -5,6 +5,8 @@ import Grid from "@mui/material/Grid";
 import Stack from "@mui/material/Stack";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import IconButton from "@mui/material/IconButton";
+import { useMediaTabContextFunctions } from "../contexts/MediaTabContextProvider";
+import CardActionArea from "@mui/material/CardActionArea";
 
 const mediaThumbnailStyle = {
   p: 0,
@@ -17,16 +19,19 @@ const mediaThumbnailCaptionStyle = {
 };
 
 export default function MediaThumbnail() {
-  const renderPreview = () => {
+  const { openGalleryModal } = useMediaTabContextFunctions();
+
+  const renderThumbnail = () => {
     return (
-      <div
-        style={{
+      <CardActionArea
+        onClick={() => openGalleryModal("1")}
+        sx={{
           width: "100%",
           height: "100px",
           backgroundColor: "red",
           aspectRatio: "4/3",
         }}
-      ></div>
+      ></CardActionArea>
     );
   };
 
@@ -34,7 +39,7 @@ export default function MediaThumbnail() {
     <>
       <Grid item sx={{ width: "200px", aspectRatio: "4/3" }}>
         <Card sx={mediaThumbnailStyle}>
-          {renderPreview()}
+          {renderThumbnail()}
           <Stack
             direction={"row"}
             alignItems={"center"}

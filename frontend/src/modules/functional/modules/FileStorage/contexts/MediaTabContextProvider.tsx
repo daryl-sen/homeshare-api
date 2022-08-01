@@ -1,4 +1,3 @@
-import { SettingsApplicationsOutlined } from "@mui/icons-material";
 import React, { useContext, useState, createContext } from "react";
 
 interface MediaTabContext {
@@ -23,6 +22,10 @@ const MediaTabReadOnlyContext = createContext<MediaTabReadOnlyContext>({
 
 export function useMediaTabContext() {
   return useContext(MediaTabContext);
+}
+
+export function useMediaTabContextFunctions() {
+  return useContext(MediaTabReadOnlyContext);
 }
 
 export function MediaTabContextProvider({

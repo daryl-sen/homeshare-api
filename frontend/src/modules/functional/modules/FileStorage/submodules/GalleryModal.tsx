@@ -9,13 +9,16 @@ import ClearIcon from "@mui/icons-material/Clear";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import Grid from "@mui/material/Grid";
+import CardMedia from "@mui/material/CardMedia";
+import { useMediaTabContext } from "../contexts/MediaTabContextProvider";
 
 const captionStyle = {};
 
 function ImagePlaceholder() {
   return (
-    <div
-      style={{
+    <CardMedia
+      component={"div"}
+      sx={{
         backgroundColor: "red",
         width: "100%",
         aspectRatio: "4/3",
@@ -25,6 +28,8 @@ function ImagePlaceholder() {
 }
 
 export default function GalleryModal() {
+  const { isGalleryModalOpen } = useMediaTabContext();
+
   const handleDeleteTag = () => {
     console.log("delete tag");
   };
@@ -34,7 +39,12 @@ export default function GalleryModal() {
   };
 
   return (
-    <Dialog open={true} fullWidth maxWidth={"md"} PaperProps={{ sx: { p: 0 } }}>
+    <Dialog
+      open={isGalleryModalOpen}
+      fullWidth
+      maxWidth={"md"}
+      PaperProps={{ sx: { p: 0 } }}
+    >
       <ImagePlaceholder />
       <Grid
         container
