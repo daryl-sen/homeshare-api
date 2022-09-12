@@ -6,7 +6,7 @@ import v1ApiDoc from "./api-doc";
 import swaggerUi from "swagger-ui-express";
 
 const app = express();
-const port = 3200;
+const port = process.env.PORT || 3200;
 
 const rootPath = path.join(__dirname);
 
