@@ -1,9 +1,17 @@
 import { User } from "./user";
+import { BaseService } from "../common/baseService";
+import setupDb from "../db/setup";
 
 // A post request should not contain an id.
 export type UserCreationParams = Pick<User, "email" | "name" | "phoneNumbers">;
 
-export class UsersService {
+export class UsersService extends BaseService {
+  constructor() {
+    console.log("setting up service");
+    super();
+    setupDb();
+  }
+
   public get(id: number, name?: string): User {
     return {
       id,
