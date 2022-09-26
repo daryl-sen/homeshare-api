@@ -10,7 +10,7 @@ import setupDb from './db/setup';
 export const app = express();
 
 dotenv.config();
-setupDb();
+setupDb(process.env.RESET_ON_RELOAD === "true");
 
 // Use body parser to read sent json payloads
 app.use(
