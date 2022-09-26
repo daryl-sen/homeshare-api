@@ -1,15 +1,7 @@
-import {
-  Body,
-  Controller,
-  Get,
-  Path,
-  Post,
-  Query,
-  Route,
-  SuccessResponse,
-} from "tsoa";
-import { User } from "./user";
-import { UsersService, UserCreationParams } from "./usersService";
+import { Body, Controller, Get, Path, Post, Query, Route, SuccessResponse } from 'tsoa';
+
+import { User } from './user';
+import { UserCreationParams, UsersService } from './usersService';
 
 @Route("users")
 export class UsersController extends Controller {

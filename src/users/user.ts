@@ -1,7 +1,8 @@
 export interface User {
   id: number;
-  email: string;
-  name: string;
-  status?: "Happy" | "Sad";
-  phoneNumbers: string[];
+  userName: string;
+  displayName: string;
+  encryptedPassword: string;
+  lastLogin: string;
+  isAdmin: boolean;
 }
