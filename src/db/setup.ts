@@ -4,17 +4,28 @@ import USER_QUERIES from './queries/userQueries';
 
 const DB_SOURCE = "db.sqlite";
 
-const createTables = (db: sqlite3.Database) => {
-  console.log("Attempting to create tables");
+const createTables = (db: sqlite3.Database, shouldDropTables?: boolean) => {
+  try {
+    db.serialize(() => {
+      if (shouldDropTables) {
+        console.log("dropping tables");
+        db.run(USER_QUERIES.SETUP.DROP_TABLE);
+      }
 
-  db.serialize(() => {
-    db.run(USER_QUERIES.SETUP.CREATE_TABLE);
-  });
+      console.log("creating tables");
+      db.run(USER_QUERIES.SETUP.CREATE_TABLE);
+    });
+  } catch (e) {
+    console.log(
+      "Error creating table, one or more table(s) probably already exists."
+    );
+    console.log(e);
+  }
 
   db.close();
 };
 
-export default function setupDb() {
+export default function setupDb(shouldFullyReset: boolean) {
   const db = new sqlite3.Database(DB_SOURCE, (err) => {
     if (err) {
       console.log(err.message);
@@ -24,7 +35,7 @@ export default function setupDb() {
     console.log("connected to database");
 
     try {
-      createTables(db);
+      createTables(db, shouldFullyReset);
     } catch (e) {
       console.log("An error has occurred while creating tables");
     }
