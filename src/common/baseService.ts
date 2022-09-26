@@ -1,15 +1,18 @@
-import sqlite3 from "sqlite3";
+import sqlite3 from 'sqlite3';
+
 const DB_SOURCE = "db.sqlite";
 
 export class BaseService {
   constructor() {}
 
-  private runQuery(query: string, values: string[]) {
+  public runQuery(query: string, values: unknown[]) {
+    // type is unknown because it can be a number, string, boolean, etc
     const db = this.openDbConnection();
+    const sanitizedParams = this.sanitizeParams(values);
 
     db.serialize(() => {
       const statement = db.prepare(query);
-      statement.run(values);
+      statement.run(...sanitizedParams);
       statement.finalize();
     });
 
@@ -22,8 +25,11 @@ export class BaseService {
         console.log(err.message);
         throw err;
       }
-
-      console.log("connected to database");
     });
+  }
+
+  private sanitizeParams(values: unknown[]) {
+    // TODO: add santization logic
+    return values;
   }
 }
