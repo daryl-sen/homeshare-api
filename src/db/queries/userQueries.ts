@@ -10,7 +10,7 @@ const USER_QUERIES = {
     );`,
     DROP_TABLE: `DROP TABLE IF EXISTS users;`,
   },
-  CREATE_USER: `INSERT INTO users (user_name, display_name, encrypted_password, is_admin, last_login) VALUES (?, ?, ?, ?, ?);`,
+  CREATE_USER: `INSERT INTO users (user_name, display_name, encrypted_password, is_admin, last_login) VALUES (?, ?, ?, ?, ?) RETURNING id;`,
   READ_USER: `SELECT * FROM users WHERE users.user_name=?;`,
   READ_USER_BY_ID: `SELECT * FROM users WHERE users.id=?;`,
   // the middle part of this query will be built dynamically in the service
