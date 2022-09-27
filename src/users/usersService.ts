@@ -3,7 +3,7 @@ import snakeCase from 'snake-case-typescript';
 import { BaseService } from '../common/baseService';
 import USER_QUERIES from '../db/queries/userQueries';
 import camelize from '../helpers/camelize';
-import { User, UserWithoutPassword } from './user';
+import { User, UserCreationResponse, UserWithoutPassword } from './user';
 
 export type UserCreationParams = Pick<
   User,
@@ -23,12 +23,10 @@ export class UsersService extends BaseService {
 
   public async create(
     createParams: UserCreationParams
-  ): Promise<UserWithoutPassword> {
+  ): Promise<UserCreationResponse> {
     const query = this.createUserQuery(createParams);
 
-    // fetch the newly created user after creation to get the dynamic ID or UUID
-    // local fetches are cheap anyway
-    return await this.getUserQuery(createParams.userName);
+    return query;
   }
 
   public async update(userId: number, updateParams: UserUpdateParams) {
@@ -43,23 +41,26 @@ export class UsersService extends BaseService {
     this.deleteUserQuery(userId);
   }
 
-  private createUserQuery(params: UserCreationParams): void {
+  private async createUserQuery(
+    params: UserCreationParams
+  ): Promise<UserCreationResponse> {
     const { userName, displayName, isAdmin, encryptedPassword } = params;
 
     // this order MUST be maintained
-    this.runQuery(USER_QUERIES.CREATE_USER, [
+    return (await this.runQueryAndReturn(USER_QUERIES.CREATE_USER, [
       userName,
       displayName,
       encryptedPassword,
       isAdmin ? "1" : "0",
       new Date().toISOString(),
-    ]);
+    ])) as UserCreationResponse;
   }
 
   private async getUserQuery(
     userName: string,
     userId?: number
   ): Promise<UserWithoutPassword> {
+    console.log("fetching user");
     const fetchedUser: User = camelize(
       await this.runQueryAndReturn(
         !!userId ? USER_QUERIES.READ_USER_BY_ID : USER_QUERIES.READ_USER,

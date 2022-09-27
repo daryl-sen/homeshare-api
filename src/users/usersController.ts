@@ -2,7 +2,7 @@ import {
     Body, Controller, Delete, Get, Patch, Path, Post, Query, Route, SuccessResponse
 } from 'tsoa';
 
-import { User, UserWithoutPassword } from './user';
+import { User, UserCreationResponse, UserWithoutPassword } from './user';
 import { UserCreationParams, UsersService, UserUpdateParams } from './usersService';
 
 @Route("users")
@@ -18,7 +18,7 @@ export class UsersController extends Controller {
   @Post()
   public async createUser(
     @Body() requestBody: UserCreationParams
-  ): Promise<UserWithoutPassword> {
+  ): Promise<UserCreationResponse> {
     this.setStatus(201);
     return await new UsersService().create(requestBody);
   }

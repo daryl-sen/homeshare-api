@@ -10,3 +10,7 @@ export interface User {
 export type UserWithoutPassword = Omit<User, "encryptedPassword"> & {
   encryptedPassword: undefined;
 };
+
+export interface UserCreationResponse {
+  id: number;
+}
