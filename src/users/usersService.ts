@@ -1,58 +1,101 @@
+import snakeCase from 'snake-case-typescript';
+
 import { BaseService } from '../common/baseService';
 import USER_QUERIES from '../db/queries/userQueries';
-import { User } from './user';
+import camelize from '../helpers/camelize';
+import { User, UserCreationResponse, UserWithoutPassword } from './user';
 
-// A post request should not contain an id.
 export type UserCreationParams = Pick<
   User,
   "userName" | "displayName" | "encryptedPassword" | "isAdmin" | "lastLogin"
 >;
+
+export interface UserUpdateParams extends Partial<User> {}
 
 export class UsersService extends BaseService {
   constructor() {
     super();
   }
 
-  public get(id: number, name?: string): User {
-    const query = this.runQuery(USER_QUERIES.READ_USER, [`${id}`]);
-    console.log(query);
-
-    return {
-      id,
-      userName: "user name",
-      displayName: "display name",
-      encryptedPassword: "password",
-      isAdmin: false,
-      lastLogin: new Date().toISOString(),
-    };
+  public async get(userName: string): Promise<UserWithoutPassword> {
+    return await this.getUserQuery(userName);
   }
 
-  public create(userCreationParams: UserCreationParams): User {
-    try {
-      const query = this.createUserQuery(userCreationParams);
-    } catch (e) {
-      console.log(e);
-    }
+  public async create(
+    createParams: UserCreationParams
+  ): Promise<UserCreationResponse> {
+    const query = this.createUserQuery(createParams);
 
-    return {
-      id: Math.floor(Math.random() * 10000), // Random
-      ...userCreationParams,
-    };
+    return query;
   }
 
-  private createUserQuery(params: UserCreationParams): void {
-    const { userName, displayName, isAdmin, encryptedPassword, lastLogin } =
-      params;
+  public async update(userId: number, updateParams: UserUpdateParams) {
+    // user name is irrelevant when ID is provided
+    const targetUser = await this.getUserQuery("", userId);
+
+    // endpoint only accepts attributes that need to be changed; unchanged attributes will be set to current values
+    this.updateUserQuery(userId, updateParams);
+  }
+
+  public delete(userId: number) {
+    this.deleteUserQuery(userId);
+  }
+
+  private async createUserQuery(
+    params: UserCreationParams
+  ): Promise<UserCreationResponse> {
+    const { userName, displayName, isAdmin, encryptedPassword } = params;
 
     // this order MUST be maintained
-    const query = this.runQuery(USER_QUERIES.CREATE_USER, [
+    return (await this.runQueryAndReturn(USER_QUERIES.CREATE_USER, [
       userName,
       displayName,
       encryptedPassword,
       isAdmin ? "1" : "0",
       new Date().toISOString(),
-    ]);
+    ])) as UserCreationResponse;
+  }
 
-    console.log("creating", query);
+  private async getUserQuery(
+    userName: string,
+    userId?: number
+  ): Promise<UserWithoutPassword> {
+    console.log("fetching user");
+    const fetchedUser: User = camelize(
+      await this.runQueryAndReturn(
+        !!userId ? USER_QUERIES.READ_USER_BY_ID : USER_QUERIES.READ_USER,
+        [!!userId ? userId : userName]
+      )
+    ) as User;
+
+    return { ...fetchedUser, encryptedPassword: undefined };
+  }
+
+  private updateUserQuery(userId: number, params: UserUpdateParams): void {
+    const attributesToModify: string[] = [];
+    const targetValues: unknown[] = [];
+
+    Object.keys(params).forEach((attribute) => {
+      attributesToModify.push(snakeCase(attribute) + "=?");
+    });
+
+    Object.values(params).forEach((value) => {
+      targetValues.push(value);
+    });
+    targetValues.push(userId);
+
+    // results in `attr1_name=?, attri2_name=?`, to be used in a prepared statement
+    const dynamicUpdateQuery = attributesToModify.join(", ");
+
+    const assembledQuery =
+      USER_QUERIES.UPDATE_USER.START +
+      dynamicUpdateQuery +
+      USER_QUERIES.UPDATE_USER.END;
+
+    this.runQuery(assembledQuery, targetValues);
+  }
+
+  private deleteUserQuery(userId: number): void {
+    const query = this.runQuery(USER_QUERIES.DELETE_USER, [userId]);
   }
 }

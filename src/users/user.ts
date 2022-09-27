@@ -6,3 +6,11 @@ export interface User {
   lastLogin: string;
   isAdmin: boolean;
 }
+
+export type UserWithoutPassword = Omit<User, "encryptedPassword"> & {
+  encryptedPassword: undefined;
+};
+
+export interface UserCreationResponse {
+  id: number;
+}
