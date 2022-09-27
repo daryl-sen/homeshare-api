@@ -18,8 +18,8 @@ const USER_QUERIES = {
     user_name=?,
     display_name=?,
     encrypted_password=?,
-    last_login=?,
-    is_admin=?
+    is_admin=?,
+    last_login=?
   )
   WHERE users.id=?`,
   DELETE_USER: `DELETE FROM users
