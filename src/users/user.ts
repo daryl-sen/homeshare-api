@@ -7,4 +7,6 @@ export interface User {
   isAdmin: boolean;
 }
 
-export type UserWithoutPassword = Omit<User, "encryptedPassword">;
+export type UserWithoutPassword = Omit<User, "encryptedPassword"> & {
+  encryptedPassword: undefined;
+};

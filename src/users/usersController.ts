@@ -18,10 +18,9 @@ export class UsersController extends Controller {
   @Post()
   public async createUser(
     @Body() requestBody: UserCreationParams
-  ): Promise<void> {
+  ): Promise<UserWithoutPassword> {
     this.setStatus(201);
-    new UsersService().create(requestBody);
-    return;
+    return new UsersService().create(requestBody);
   }
 
   // @SuccessResponse("200", "Modified")

@@ -1,8 +1,8 @@
 import { BaseService } from '../common/baseService';
 import USER_QUERIES from '../db/queries/userQueries';
-import { User } from './user';
+import camelize from '../helpers/camelize';
+import { User, UserWithoutPassword } from './user';
 
-// A post request should not contain an id.
 export type UserCreationParams = Pick<
   User,
   "userName" | "displayName" | "encryptedPassword" | "isAdmin" | "lastLogin"
@@ -13,13 +13,13 @@ export class UsersService extends BaseService {
     super();
   }
 
-  public async get(userName: string): Promise<Omit<User, "encryptedPassword">> {
-    const fetchedUser = this.getUserQuery(userName);
-
-    return fetchedUser;
+  public async get(userName: string): Promise<UserWithoutPassword> {
+    return await this.getUserQuery(userName);
   }
 
-  public async create(createParams: UserCreationParams): Promise<User> {
+  public async create(
+    createParams: UserCreationParams
+  ): Promise<UserWithoutPassword> {
     const query = this.createUserQuery(createParams);
 
     // fetch the newly created user after creation
@@ -39,11 +39,11 @@ export class UsersService extends BaseService {
   //   };
   // }
 
-  private createUserQuery(params: UserCreationParams): void {
+  private async createUserQuery(params: UserCreationParams): Promise<void> {
     const { userName, displayName, isAdmin, encryptedPassword } = params;
 
     // this order MUST be maintained
-    const query = this.runQuery(USER_QUERIES.CREATE_USER, [
+    await this.runQuery(USER_QUERIES.CREATE_USER, [
       userName,
       displayName,
       encryptedPassword,
@@ -52,13 +52,12 @@ export class UsersService extends BaseService {
     ]);
   }
 
-  private async getUserQuery(userName: string): Promise<User> {
-    const fetchedUser: User = (await this.runQueryAndReturn(
-      USER_QUERIES.READ_USER,
-      [userName]
-    )) as User;
+  private async getUserQuery(userName: string): Promise<UserWithoutPassword> {
+    const fetchedUser: User = camelize(
+      await this.runQueryAndReturn(USER_QUERIES.READ_USER, [userName])
+    ) as User;
 
-    return { ...fetchedUser, encryptedPassword: "" };
+    return { ...fetchedUser, encryptedPassword: undefined };
   }
 
   // private editUserQuery(params: UserCreationParams): void {
