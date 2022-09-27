@@ -13,36 +13,34 @@ export class UsersService extends BaseService {
     super();
   }
 
-  public get(id: number, name?: string): User {
-    const query = this.runQuery(USER_QUERIES.READ_USER, [`${id}`]);
-    console.log(query);
+  public async get(userName: string): Promise<Omit<User, "encryptedPassword">> {
+    const fetchedUser = this.getUserQuery(userName);
 
-    return {
-      id,
-      userName: "user name",
-      displayName: "display name",
-      encryptedPassword: "password",
-      isAdmin: false,
-      lastLogin: new Date().toISOString(),
-    };
+    return fetchedUser;
   }
 
-  public create(userCreationParams: UserCreationParams): User {
-    try {
-      const query = this.createUserQuery(userCreationParams);
-    } catch (e) {
-      console.log(e);
-    }
+  public async create(createParams: UserCreationParams): Promise<User> {
+    const query = this.createUserQuery(createParams);
 
-    return {
-      id: Math.floor(Math.random() * 10000), // Random
-      ...userCreationParams,
-    };
+    // fetch the newly created user after creation
+    return await this.getUserQuery(createParams.userName);
   }
+
+  // public edit(updateParams: UserCreationParams) {
+  //   try {
+  //     this.editUserQuery(updateParams);
+  //   } catch (e) {
+  //     console.log(e);
+  //   }
+
+  //   return {
+  //     id: Math.floor(Math.random() * 10000), // Random
+  //     ...updateParams,
+  //   };
+  // }
 
   private createUserQuery(params: UserCreationParams): void {
-    const { userName, displayName, isAdmin, encryptedPassword, lastLogin } =
-      params;
+    const { userName, displayName, isAdmin, encryptedPassword } = params;
 
     // this order MUST be maintained
     const query = this.runQuery(USER_QUERIES.CREATE_USER, [
@@ -52,7 +50,32 @@ export class UsersService extends BaseService {
       isAdmin ? "1" : "0",
       new Date().toISOString(),
     ]);
-
-    console.log("creating", query);
   }
+
+  private async getUserQuery(userName: string): Promise<User> {
+    const fetchedUser: User = (await this.runQueryAndReturn(
+      USER_QUERIES.READ_USER,
+      [userName]
+    )) as User;
+
+    return { ...fetchedUser, encryptedPassword: "" };
+  }
+
+  // private editUserQuery(params: UserCreationParams): void {
+  //   const { userName, displayName, isAdmin, encryptedPassword } = params;
+
+  //   // this order MUST be maintained
+  //   const query = this.runQuery(USER_QUERIES.UPDATE_USER, [
+  //     userName,
+  //     displayName,
+  //     encryptedPassword,
+  //     isAdmin ? "1" : "0",
+  //     new Date().toISOString(),
+  //   ]);
+  // }
+
+  // private deleteUserQuery(userId: number): void {
+  //   // this order MUST be maintained
+  //   const query = this.runQuery(USER_QUERIES.DELETE_USER, [userId]);
+  // }
 }
