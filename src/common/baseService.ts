@@ -19,6 +19,28 @@ export class BaseService {
     db.close();
   }
 
+  public runQueryAndReturn(query: string, values: unknown[]) {
+    const db = this.openDbConnection();
+    const sanitizedParams = this.sanitizeParams(values);
+
+    return new Promise((resolve, reject) => {
+      try {
+        const executedQuery = db.serialize(() => {
+          const statement = db.prepare(query);
+          statement.each(sanitizedParams, (_err, row) => {
+            resolve(row);
+          });
+          statement.finalize();
+        });
+      } catch (e) {
+        console.log(e);
+        reject(e);
+      }
+
+      db.close();
+    });
+  }
+
   private openDbConnection() {
     return new sqlite3.Database(DB_SOURCE, (err) => {
       if (err) {
