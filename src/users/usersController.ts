@@ -3,7 +3,7 @@ import {
 } from 'tsoa';
 
 import { User, UserWithoutPassword } from './user';
-import { UserCreationParams, UsersService } from './usersService';
+import { UserCreationParams, UsersService, UserUpdateParams } from './usersService';
 
 @Route("users")
 export class UsersController extends Controller {
@@ -20,18 +20,19 @@ export class UsersController extends Controller {
     @Body() requestBody: UserCreationParams
   ): Promise<UserWithoutPassword> {
     this.setStatus(201);
-    return new UsersService().create(requestBody);
+    return await new UsersService().create(requestBody);
   }
 
-  // @SuccessResponse("200", "Modified")
-  // @Patch("{userId}")
-  // public async updateUser(
-  //   @Body() requestBody: UserCreationParams
-  // ): Promise<void> {
-  //   this.setStatus(201);
-  //   new UsersService().create(requestBody);
-  //   return;
-  // }
+  @SuccessResponse("200", "Modified")
+  @Patch("{userId}")
+  public async updateUser(
+    @Query() userId: number,
+    @Body() requestBody: UserUpdateParams
+  ): Promise<void> {
+    this.setStatus(201);
+    new UsersService().update(userId, requestBody);
+    return;
+  }
 
   // @SuccessResponse("200", "Deleted")
   // @Delete("{userId}")

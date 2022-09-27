@@ -1,3 +1,5 @@
+import snakeCase from 'snake-case-typescript';
+
 import { BaseService } from '../common/baseService';
 import USER_QUERIES from '../db/queries/userQueries';
 import camelize from '../helpers/camelize';
@@ -7,6 +9,8 @@ export type UserCreationParams = Pick<
   User,
   "userName" | "displayName" | "encryptedPassword" | "isAdmin" | "lastLogin"
 >;
+
+export interface UserUpdateParams extends Partial<User> {}
 
 export class UsersService extends BaseService {
   constructor() {
@@ -22,28 +26,24 @@ export class UsersService extends BaseService {
   ): Promise<UserWithoutPassword> {
     const query = this.createUserQuery(createParams);
 
-    // fetch the newly created user after creation
+    // fetch the newly created user after creation to get the dynamic ID or UUID
+    // local fetches are cheap anyway
     return await this.getUserQuery(createParams.userName);
   }
 
-  // public edit(updateParams: UserCreationParams) {
-  //   try {
-  //     this.editUserQuery(updateParams);
-  //   } catch (e) {
-  //     console.log(e);
-  //   }
+  public async update(userId: number, updateParams: UserUpdateParams) {
+    // user name is irrelevant when ID is provided
+    const targetUser = await this.getUserQuery("", userId);
 
-  //   return {
-  //     id: Math.floor(Math.random() * 10000), // Random
-  //     ...updateParams,
-  //   };
-  // }
+    // endpoint only accepts attributes that need to be changed; unchanged attributes will be set to current values
+    this.updateUserQuery(userId, updateParams);
+  }
 
-  private async createUserQuery(params: UserCreationParams): Promise<void> {
+  private createUserQuery(params: UserCreationParams): void {
     const { userName, displayName, isAdmin, encryptedPassword } = params;
 
     // this order MUST be maintained
-    await this.runQuery(USER_QUERIES.CREATE_USER, [
+    this.runQuery(USER_QUERIES.CREATE_USER, [
       userName,
       displayName,
       encryptedPassword,
@@ -52,26 +52,43 @@ export class UsersService extends BaseService {
     ]);
   }
 
-  private async getUserQuery(userName: string): Promise<UserWithoutPassword> {
+  private async getUserQuery(
+    userName: string,
+    userId?: number
+  ): Promise<UserWithoutPassword> {
     const fetchedUser: User = camelize(
-      await this.runQueryAndReturn(USER_QUERIES.READ_USER, [userName])
+      await this.runQueryAndReturn(
+        !!userId ? USER_QUERIES.READ_USER_BY_ID : USER_QUERIES.READ_USER,
+        [!!userId ? userId : userName]
+      )
     ) as User;
 
     return { ...fetchedUser, encryptedPassword: undefined };
   }
 
-  // private editUserQuery(params: UserCreationParams): void {
-  //   const { userName, displayName, isAdmin, encryptedPassword } = params;
+  private updateUserQuery(userId: number, params: UserUpdateParams): void {
+    const attributesToModify: string[] = [];
+    const targetValues: unknown[] = [];
 
-  //   // this order MUST be maintained
-  //   const query = this.runQuery(USER_QUERIES.UPDATE_USER, [
-  //     userName,
-  //     displayName,
-  //     encryptedPassword,
-  //     isAdmin ? "1" : "0",
-  //     new Date().toISOString(),
-  //   ]);
-  // }
+    Object.keys(params).forEach((attribute) => {
+      attributesToModify.push(snakeCase(attribute) + "=?");
+    });
+
+    Object.values(params).forEach((value) => {
+      targetValues.push(value);
+    });
+    targetValues.push(userId);
+
+    // results in `attr1_name=?, attri2_name=?`, to be used in a prepared statement
+    const dynamicUpdateQuery = attributesToModify.join(", ");
+
+    const assembledQuery =
+      USER_QUERIES.UPDATE_USER.START +
+      dynamicUpdateQuery +
+      USER_QUERIES.UPDATE_USER.END;
+
+    this.runQuery(assembledQuery, targetValues);
+  }
 
   // private deleteUserQuery(userId: number): void {
   //   // this order MUST be maintained
