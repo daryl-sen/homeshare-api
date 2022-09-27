@@ -39,6 +39,10 @@ export class UsersService extends BaseService {
     this.updateUserQuery(userId, updateParams);
   }
 
+  public delete(userId: number) {
+    this.deleteUserQuery(userId);
+  }
+
   private createUserQuery(params: UserCreationParams): void {
     const { userName, displayName, isAdmin, encryptedPassword } = params;
 
@@ -90,8 +94,7 @@ export class UsersService extends BaseService {
     this.runQuery(assembledQuery, targetValues);
   }
 
-  // private deleteUserQuery(userId: number): void {
-  //   // this order MUST be maintained
-  //   const query = this.runQuery(USER_QUERIES.DELETE_USER, [userId]);
-  // }
+  private deleteUserQuery(userId: number): void {
+    const query = this.runQuery(USER_QUERIES.DELETE_USER, [userId]);
+  }
 }

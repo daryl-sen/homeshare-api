@@ -34,11 +34,11 @@ export class UsersController extends Controller {
     return;
   }
 
-  // @SuccessResponse("200", "Deleted")
-  // @Delete("{userId}")
-  // public async deleteUser(@Path() userId: number): Promise<void> {
-  //   this.setStatus(201);
-  //   // new UsersService().delete(userId);
-  //   return;
-  // }
+  @SuccessResponse("200", "Deleted")
+  @Delete("{userId}")
+  public async deleteUser(@Path() userId: number): Promise<void> {
+    this.setStatus(200);
+    new UsersService().delete(userId);
+    return;
+  }
 }
