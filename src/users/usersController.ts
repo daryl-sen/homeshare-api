@@ -42,20 +42,36 @@ export class UsersController extends Controller {
   @SuccessResponse("200", "Modified")
   @Patch("{userId}")
   public async updateUser(
-    @Query() userId: number,
-    @Body() requestBody: UserUpdateParams
+    @Path() userId: number,
+    @Body() requestBody: UserUpdateParams,
+    @Res() userNotFoundResponse: TsoaResponse<404, { reason: string }>
   ): Promise<void> {
-    this.setStatus(201);
-    new UsersService().update(userId, requestBody);
-    return;
+    try {
+      await new UsersService().update(userId, requestBody);
+      this.setStatus(201);
+      return;
+    } catch (e) {
+      return userNotFoundResponse(404, {
+        reason: "The target user does not exist",
+      });
+    }
   }
 
   @Response<ValidateErrorJSON>(422, "Unprocessable Entity")
   @SuccessResponse("200", "Deleted")
   @Delete("{userId}")
-  public async deleteUser(@Path() userId: number): Promise<void> {
-    this.setStatus(200);
-    new UsersService().delete(userId);
-    return;
+  public async deleteUser(
+    @Path() userId: number,
+    @Res() userNotFoundResponse: TsoaResponse<404, { reason: string }>
+  ): Promise<void> {
+    try {
+      await new UsersService().delete(userId);
+      this.setStatus(200);
+      return;
+    } catch (e) {
+      return userNotFoundResponse(404, {
+        reason: "The target user does not exist",
+      });
+    }
   }
 }

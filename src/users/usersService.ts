@@ -33,11 +33,21 @@ export class UsersService extends BaseService {
     // user name is irrelevant when ID is provided
     const targetUser = await this.getUserQuery("", userId);
 
+    if (!targetUser) {
+      throw Error("Target user not found");
+    }
+
     // endpoint only accepts attributes that need to be changed; unchanged attributes will be set to current values
     this.updateUserQuery(userId, updateParams);
   }
 
-  public delete(userId: number) {
+  public async delete(userId: number) {
+    const targetUser = await this.getUserQuery("", userId);
+
+    if (!targetUser) {
+      throw Error("Target user not found");
+    }
+
     this.deleteUserQuery(userId);
   }
 
@@ -101,7 +111,7 @@ export class UsersService extends BaseService {
     this.runQuery(assembledQuery, targetValues);
   }
 
-  private deleteUserQuery(userId: number): void {
-    const query = this.runQuery(USER_QUERIES.DELETE_USER, [userId]);
+  private async deleteUserQuery(userId: number) {
+    this.runQuery(USER_QUERIES.DELETE_USER, [userId]);
   }
 }
