@@ -17,7 +17,7 @@ export class UsersService extends BaseService {
     super();
   }
 
-  public async get(userName: string): Promise<UserWithoutPassword> {
+  public async get(userName: string): Promise<UserWithoutPassword | undefined> {
     return await this.getUserQuery(userName);
   }
 
@@ -47,28 +47,34 @@ export class UsersService extends BaseService {
     const { userName, displayName, isAdmin, encryptedPassword } = params;
 
     // this order MUST be maintained
-    return (await this.runQueryAndReturn(USER_QUERIES.CREATE_USER, [
-      userName,
-      displayName,
-      encryptedPassword,
-      isAdmin ? "1" : "0",
-      new Date().toISOString(),
-    ])) as UserCreationResponse;
+    const newUserDataArray = (await this.runQueryAndReturn(
+      USER_QUERIES.CREATE_USER,
+      [
+        userName,
+        displayName,
+        encryptedPassword,
+        isAdmin ? "1" : "0",
+        new Date().toISOString(),
+      ]
+    )) as UserCreationResponse[];
+
+    return newUserDataArray[0];
   }
 
   private async getUserQuery(
     userName: string,
     userId?: number
-  ): Promise<UserWithoutPassword> {
-    console.log("fetching user");
-    const fetchedUser: User = camelize(
-      await this.runQueryAndReturn(
-        !!userId ? USER_QUERIES.READ_USER_BY_ID : USER_QUERIES.READ_USER,
-        [!!userId ? userId : userName]
-      )
-    ) as User;
+  ): Promise<UserWithoutPassword | undefined> {
+    const fetchedUsers = (await this.runQueryAndReturn(
+      !!userId ? USER_QUERIES.READ_USER_BY_ID : USER_QUERIES.READ_USER,
+      [!!userId ? userId : userName]
+    )) as User[];
 
-    return { ...fetchedUser, encryptedPassword: undefined };
+    if (fetchedUsers.length === 0) {
+      return undefined;
+    }
+
+    return { ...fetchedUsers[0], encryptedPassword: undefined };
   }
 
   private updateUserQuery(userId: number, params: UserUpdateParams): void {
