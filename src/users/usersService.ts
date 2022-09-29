@@ -53,7 +53,7 @@ export class UsersService extends BaseService {
         userName,
         displayName,
         encryptedPassword,
-        isAdmin ? "1" : "0",
+        isAdmin,
         new Date().toISOString(),
       ]
     )) as UserCreationResponse[];
