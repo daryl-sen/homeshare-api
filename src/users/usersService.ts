@@ -56,10 +56,10 @@ export class UsersService extends BaseService {
   ): Promise<UserCreationResponse> {
     const { userName, displayName, isAdmin, encryptedPassword } = params;
 
-    // this order MUST be maintained
     const newUserDataArray = (await this.runQueryAndReturn(
       USER_QUERIES.CREATE_USER,
       [
+        // this order MUST be maintained, aligned with the SQL queries
         userName,
         displayName,
         encryptedPassword,
@@ -111,7 +111,7 @@ export class UsersService extends BaseService {
     this.runQuery(assembledQuery, targetValues);
   }
 
-  private async deleteUserQuery(userId: number) {
+  private deleteUserQuery(userId: number) {
     this.runQuery(USER_QUERIES.DELETE_USER, [userId]);
   }
 }
