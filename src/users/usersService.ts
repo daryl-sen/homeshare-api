@@ -22,11 +22,9 @@ export class UsersService extends BaseService {
   }
 
   public async create(
-    createParams: UserCreationParams
+    creationParams: UserCreationParams
   ): Promise<UserCreationResponse> {
-    const query = this.createUserQuery(createParams);
-
-    return query;
+    return await this.createUserQuery(creationParams);
   }
 
   public async update(userId: number, updateParams: UserUpdateParams) {
@@ -51,7 +49,7 @@ export class UsersService extends BaseService {
       userName,
       displayName,
       encryptedPassword,
-      isAdmin ? "1" : "0",
+      isAdmin,
       new Date().toISOString(),
     ])) as UserCreationResponse;
   }
@@ -60,7 +58,6 @@ export class UsersService extends BaseService {
     userName: string,
     userId?: number
   ): Promise<UserWithoutPassword> {
-    console.log("fetching user");
     const fetchedUser: User = camelize(
       await this.runQueryAndReturn(
         !!userId ? USER_QUERIES.READ_USER_BY_ID : USER_QUERIES.READ_USER,
