@@ -1,5 +1,6 @@
 import sqlite3 from 'sqlite3';
 
+import CLIP_QUERIES from './queries/clipQueries';
 import USER_QUERIES from './queries/userQueries';
 
 const DB_SOURCE = "db.sqlite";
@@ -10,10 +11,12 @@ const createTables = (db: sqlite3.Database, shouldDropTables?: boolean) => {
       if (shouldDropTables) {
         console.log("dropping tables");
         db.run(USER_QUERIES.SETUP.DROP_TABLE);
+        db.run(CLIP_QUERIES.SETUP.DROP_TABLE);
       }
 
       console.log("creating tables");
       db.run(USER_QUERIES.SETUP.CREATE_TABLE);
+      db.run(CLIP_QUERIES.SETUP.CREATE_TABLE);
     });
   } catch (e) {
     console.log(
