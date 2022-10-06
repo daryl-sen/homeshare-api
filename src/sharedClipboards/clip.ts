@@ -6,3 +6,7 @@ export interface Clip {
   modifiedAt: string;
   createdAt: string;
 }
+
+export interface ClipCreationResponse {
+  id: number;
+}
