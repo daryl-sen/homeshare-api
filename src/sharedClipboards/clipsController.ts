@@ -48,4 +48,22 @@ export class ClipsController extends Controller {
       });
     }
   }
+
+  @Response<ValidateErrorJSON>(422, "Unprocessable Entity")
+  @SuccessResponse("200", "Deleted")
+  @Delete("{clipId}")
+  public async deleteClip(
+    @Path() clipId: number,
+    @Res() userNotFoundResponse: TsoaResponse<404, { reason: string }>
+  ): Promise<void> {
+    try {
+      await new ClipsService().delete(clipId);
+      this.setStatus(200);
+      return;
+    } catch (e) {
+      return userNotFoundResponse(404, {
+        reason: "The target clip does not exist",
+      });
+    }
+  }
 }

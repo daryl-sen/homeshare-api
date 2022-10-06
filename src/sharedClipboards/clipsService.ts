@@ -38,6 +38,16 @@ export class ClipsService extends BaseService {
     this.updateClipQuery(updateParams, clipId);
   }
 
+  public async delete(clipId: number): Promise<void> {
+    const targetClip = this.getClipByIdQuery(clipId);
+
+    if (!targetClip) {
+      throw Error("Target clip not found");
+    }
+
+    this.deleteClipQuery(clipId);
+  }
+
   private async getClipsQuery(userId: number): Promise<Clip[]> {
     return camelize(
       await this.runQueryAndReturn(CLIP_QUERIES.READ_CLIPS_BY_USER_ID, [userId])
@@ -81,5 +91,9 @@ export class ClipsService extends BaseService {
       modifiedAt,
       clipId,
     ]);
+  }
+
+  private deleteClipQuery(clipId: number): void {
+    this.runQuery(CLIP_QUERIES.DELETE_CLIP, [clipId]);
   }
 }
