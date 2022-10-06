@@ -1,11 +1,12 @@
 import {
-    Body, Controller, Delete, Get, Patch, Path, Post, Query, Route, SuccessResponse
+    Body, Controller, Delete, Get, Patch, Path, Post, Query, Route, SuccessResponse, Tags
 } from 'tsoa';
 
 import { User, UserCreationResponse, UserWithoutPassword } from './user';
 import { UserCreationParams, UsersService, UserUpdateParams } from './usersService';
 
 @Route("users")
+@Tags("Users")
 export class UsersController extends Controller {
   @Get("{userId}")
   public async getUser(
