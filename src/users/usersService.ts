@@ -17,7 +17,7 @@ export class UsersService extends BaseService {
     super();
   }
 
-  public async get(userName: string): Promise<UserWithoutPassword> {
+  public async get(userName: string): Promise<UserWithoutPassword | undefined> {
     return await this.getUserQuery(userName);
   }
 
@@ -31,11 +31,21 @@ export class UsersService extends BaseService {
     // user name is irrelevant when ID is provided
     const targetUser = await this.getUserQuery("", userId);
 
+    if (!targetUser) {
+      throw Error("Target user not found");
+    }
+
     // endpoint only accepts attributes that need to be changed; unchanged attributes will be set to current values
     this.updateUserQuery(userId, updateParams);
   }
 
-  public delete(userId: number) {
+  public async delete(userId: number) {
+    const targetUser = await this.getUserQuery("", userId);
+
+    if (!targetUser) {
+      throw Error("Target user not found");
+    }
+
     this.deleteUserQuery(userId);
   }
 
@@ -57,15 +67,17 @@ export class UsersService extends BaseService {
   private async getUserQuery(
     userName: string,
     userId?: number
-  ): Promise<UserWithoutPassword> {
-    const fetchedUser: User = camelize(
-      await this.runQueryAndReturn(
-        !!userId ? USER_QUERIES.READ_USER_BY_ID : USER_QUERIES.READ_USER,
-        [!!userId ? userId : userName]
-      )
-    ) as User;
+  ): Promise<UserWithoutPassword | undefined> {
+    const fetchedUsers = (await this.runQueryAndReturn(
+      !!userId ? USER_QUERIES.READ_USER_BY_ID : USER_QUERIES.READ_USER,
+      [!!userId ? userId : userName]
+    )) as User[];
 
-    return { ...fetchedUser, encryptedPassword: undefined };
+    if (fetchedUsers.length === 0) {
+      return undefined;
+    }
+
+    return { ...fetchedUsers[0], encryptedPassword: undefined };
   }
 
   private updateUserQuery(userId: number, params: UserUpdateParams): void {
@@ -92,7 +104,7 @@ export class UsersService extends BaseService {
     this.runQuery(assembledQuery, targetValues);
   }
 
-  private deleteUserQuery(userId: number): void {
-    const query = this.runQuery(USER_QUERIES.DELETE_USER, [userId]);
+  private deleteUserQuery(userId: number) {
+    this.runQuery(USER_QUERIES.DELETE_USER, [userId]);
   }
 }

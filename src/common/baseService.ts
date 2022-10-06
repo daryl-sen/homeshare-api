@@ -24,19 +24,16 @@ export class BaseService {
     const sanitizedParams = this.sanitizeParams(values);
 
     return new Promise((resolve, reject) => {
-      try {
-        const executedQuery = db.serialize(() => {
-          const statement = db.prepare(query);
-          statement.each(sanitizedParams, (_err, row) => {
-            resolve(row);
-          });
-          statement.finalize();
+      db.serialize(() => {
+        const statement = db.prepare(query);
+        statement.all(sanitizedParams, (err, row) => {
+          if (err) {
+            reject(err);
+          }
+          resolve(row);
         });
-      } catch (e) {
-        console.log(e);
-        reject(e);
-      }
-
+        statement.finalize();
+      });
       db.close();
     });
   }
