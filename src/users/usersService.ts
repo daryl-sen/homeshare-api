@@ -22,11 +22,9 @@ export class UsersService extends BaseService {
   }
 
   public async create(
-    createParams: UserCreationParams
+    creationParams: UserCreationParams
   ): Promise<UserCreationResponse> {
-    const query = this.createUserQuery(createParams);
-
-    return query;
+    return await this.createUserQuery(creationParams);
   }
 
   public async update(userId: number, updateParams: UserUpdateParams) {
@@ -56,19 +54,14 @@ export class UsersService extends BaseService {
   ): Promise<UserCreationResponse> {
     const { userName, displayName, isAdmin, encryptedPassword } = params;
 
-    const newUserDataArray = (await this.runQueryAndReturn(
-      USER_QUERIES.CREATE_USER,
-      [
-        // this order MUST be maintained, aligned with the SQL queries
-        userName,
-        displayName,
-        encryptedPassword,
-        isAdmin,
-        new Date().toISOString(),
-      ]
-    )) as UserCreationResponse[];
-
-    return newUserDataArray[0];
+    // this order MUST be maintained
+    return (await this.runQueryAndReturn(USER_QUERIES.CREATE_USER, [
+      userName,
+      displayName,
+      encryptedPassword,
+      isAdmin,
+      new Date().toISOString(),
+    ])) as UserCreationResponse;
   }
 
   private async getUserQuery(

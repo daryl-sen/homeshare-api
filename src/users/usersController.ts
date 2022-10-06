@@ -1,6 +1,6 @@
 import {
     Body, Controller, Delete, Get, Patch, Path, Post, Query, Res, Response, Route, SuccessResponse,
-    TsoaResponse
+    Tags, TsoaResponse
 } from 'tsoa';
 
 import { UserCreationResponse, UserWithoutPassword } from './user';
@@ -12,6 +12,7 @@ interface ValidateErrorJSON {
 }
 
 @Route("users")
+@Tags("Users")
 export class UsersController extends Controller {
   @Response<ValidateErrorJSON>(404, "Not Found")
   @Get()
