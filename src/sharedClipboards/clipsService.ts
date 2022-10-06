@@ -25,10 +25,31 @@ export class ClipsService extends BaseService {
     return await this.createClipQuery(creationParams);
   }
 
+  public async update(
+    updateParams: ClipCreationParams,
+    clipId: number
+  ): Promise<void> {
+    const targetClip = this.getClipByIdQuery(clipId);
+
+    if (!targetClip) {
+      throw Error("Target clip not found");
+    }
+
+    this.updateClipQuery(updateParams, clipId);
+  }
+
   private async getClipsQuery(userId: number): Promise<Clip[]> {
     return camelize(
       await this.runQueryAndReturn(CLIP_QUERIES.READ_CLIPS_BY_USER_ID, [userId])
     ) as Clip[];
+  }
+
+  private async getClipByIdQuery(clipId: number): Promise<Clip> {
+    const targetClip = camelize(
+      await this.runQueryAndReturn(CLIP_QUERIES.READ_CLIP_BY_ID, [clipId])
+    ) as Clip[];
+
+    return targetClip[0];
   }
 
   private async createClipQuery(
@@ -45,5 +66,20 @@ export class ClipsService extends BaseService {
       modifiedAt,
       createdAt,
     ])) as ClipCreationResponse;
+  }
+
+  private updateClipQuery(
+    updateParams: ClipCreationParams,
+    clipId: number
+  ): void {
+    const { clipName, encryptedContent } = updateParams;
+    const modifiedAt = new Date().toISOString();
+
+    this.runQuery(CLIP_QUERIES.UPDATE_CLIP, [
+      clipName,
+      encryptedContent,
+      modifiedAt,
+      clipId,
+    ]);
   }
 }
