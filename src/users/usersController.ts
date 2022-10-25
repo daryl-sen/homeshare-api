@@ -1,10 +1,13 @@
 import {
-    Body, Controller, Delete, Get, Patch, Path, Post, Query, Res, Response, Route, SuccessResponse,
-    Tags, TsoaResponse
+    Body, Controller, Delete, Get, Patch, Path, Post, Query, Res, Response, Route, Security,
+    SuccessResponse, Tags, TsoaResponse
 } from 'tsoa';
 
+import { LoginService } from '../login/loginService';
 import { UserCreationResponse, UserWithoutPassword } from './user';
-import { UserCreationParams, UsersService, UserUpdateParams } from './usersService';
+import {
+    UserCreationParams, UserLoginParams, UsersService, UserUpdateParams
+} from './usersService';
 
 interface ValidateErrorJSON {
   message: "Validation failed";
@@ -15,64 +18,59 @@ interface ValidateErrorJSON {
 @Tags("Users")
 export class UsersController extends Controller {
   @Response<ValidateErrorJSON>(404, "Not Found")
+  @Security("jwt")
   @Get()
   public async getUser(
-    @Query() userName: string,
-    @Res() notFoundResponse: TsoaResponse<404, { reason: string }>
+    @Query() userName: string
   ): Promise<UserWithoutPassword> {
-    const fetchedUser = await new UsersService().get(userName);
-
-    if (!fetchedUser) {
-      return notFoundResponse(404, { reason: "User not found" });
-    }
-
-    return fetchedUser;
+    return await new UsersService().get(userName);
   }
 
   @Response<ValidateErrorJSON>(422, "Unprocessable Entity")
   @SuccessResponse("201", "Created")
   @Post()
   public async createUser(
-    @Body() requestBody: UserCreationParams
-  ): Promise<UserCreationResponse> {
-    this.setStatus(201);
-    return await new UsersService().create(requestBody);
+    @Body() requestBody: UserCreationParams,
+    @Res() unprocessableEntityResponse: TsoaResponse<422, { reason: string }>
+  ): Promise<UserCreationResponse | void> {
+    try {
+      return await new UsersService().create(requestBody);
+    } catch (e) {
+      return unprocessableEntityResponse(422, {
+        reason: "Unable to create user",
+      });
+    }
+  }
+
+  @Response<ValidateErrorJSON>(401, "Forbidden")
+  @SuccessResponse("201", "Login successful")
+  @Post("/login")
+  public async loginUser(
+    @Body() requestBody: UserLoginParams
+  ): Promise<string> {
+    const targetUserId = await new UsersService().validateLogin(
+      requestBody.userName,
+      requestBody.encryptedPassword
+    );
+    return await new LoginService().getJwt(targetUserId, false);
   }
 
   @Response<ValidateErrorJSON>(422, "Unprocessable Entity")
+  @Security("jwt")
   @SuccessResponse("200", "Modified")
   @Patch("{userId}")
   public async updateUser(
     @Path() userId: number,
-    @Body() requestBody: UserUpdateParams,
-    @Res() userNotFoundResponse: TsoaResponse<404, { reason: string }>
+    @Body() requestBody: UserUpdateParams
   ): Promise<void> {
-    try {
-      await new UsersService().update(userId, requestBody);
-      this.setStatus(201);
-      return;
-    } catch (e) {
-      return userNotFoundResponse(404, {
-        reason: "The target user does not exist",
-      });
-    }
+    return await new UsersService().update(userId, requestBody);
   }
 
   @Response<ValidateErrorJSON>(422, "Unprocessable Entity")
+  @Security("jwt")
   @SuccessResponse("200", "Deleted")
   @Delete("{userId}")
-  public async deleteUser(
-    @Path() userId: number,
-    @Res() userNotFoundResponse: TsoaResponse<404, { reason: string }>
-  ): Promise<void> {
-    try {
-      await new UsersService().delete(userId);
-      this.setStatus(200);
-      return;
-    } catch (e) {
-      return userNotFoundResponse(404, {
-        reason: "The target user does not exist",
-      });
-    }
+  public async deleteUser(@Path() userId: number): Promise<void> {
+    return await new UsersService().delete(userId);
   }
 }

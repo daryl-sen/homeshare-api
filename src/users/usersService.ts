@@ -2,6 +2,7 @@ import snakeCase from 'snake-case-typescript';
 
 import { BaseService } from '../common/baseService';
 import USER_QUERIES from '../db/queries/userQueries';
+import { AuthenticationError, NotFoundError } from '../errors';
 import camelize from '../helpers/camelize';
 import { User, UserCreationResponse, UserWithoutPassword } from './user';
 
@@ -10,6 +11,8 @@ export type UserCreationParams = Pick<
   "userName" | "displayName" | "encryptedPassword" | "isAdmin" | "lastLogin"
 >;
 
+export type UserLoginParams = Pick<User, "userName" | "encryptedPassword">;
+
 export interface UserUpdateParams extends Partial<User> {}
 
 export class UsersService extends BaseService {
@@ -17,8 +20,14 @@ export class UsersService extends BaseService {
     super();
   }
 
-  public async get(userName: string): Promise<UserWithoutPassword | undefined> {
-    return await this.getUserQuery(userName);
+  public async get(userName: string): Promise<UserWithoutPassword> {
+    const targetUser = await this.getUserWithoutPassword(userName);
+
+    if (!targetUser) {
+      throw new NotFoundError("User not found");
+    }
+
+    return targetUser;
   }
 
   public async create(
@@ -32,7 +41,7 @@ export class UsersService extends BaseService {
     const targetUser = await this.getUserQuery("", userId);
 
     if (!targetUser) {
-      throw Error("Target user not found");
+      throw new NotFoundError("Target user not found");
     }
 
     // endpoint only accepts attributes that need to be changed; unchanged attributes will be set to current values
@@ -43,10 +52,28 @@ export class UsersService extends BaseService {
     const targetUser = await this.getUserQuery("", userId);
 
     if (!targetUser) {
-      throw Error("Target user not found");
+      throw new NotFoundError("Target user not found");
     }
 
     this.deleteUserQuery(userId);
+  }
+
+  public async validateLogin(
+    userName: string,
+    password: string
+  ): Promise<number> {
+    const targetUser = await this.getUserQuery(userName);
+
+    if (targetUser.encryptedPassword !== this.hashPassword(password)) {
+      throw new AuthenticationError("Incorrect password");
+    }
+
+    return targetUser.id;
+  }
+
+  private hashPassword(password: string) {
+    // TODO: hash password
+    return password;
   }
 
   private async createUserQuery(
@@ -58,26 +85,28 @@ export class UsersService extends BaseService {
     return (await this.runQueryAndReturn(USER_QUERIES.CREATE_USER, [
       userName,
       displayName,
-      encryptedPassword,
+      this.hashPassword(encryptedPassword),
       isAdmin,
       new Date().toISOString(),
     ])) as UserCreationResponse;
   }
 
-  private async getUserQuery(
-    userName: string,
-    userId?: number
-  ): Promise<UserWithoutPassword | undefined> {
+  private async getUserQuery(userName: string, userId?: number): Promise<User> {
     const fetchedUsers = (await this.runQueryAndReturn(
       !!userId ? USER_QUERIES.READ_USER_BY_ID : USER_QUERIES.READ_USER,
       [!!userId ? userId : userName]
-    )) as User[];
+    ).then(camelize)) as User[];
 
-    if (fetchedUsers.length === 0) {
-      return undefined;
-    }
+    return fetchedUsers[0];
+  }
 
-    return { ...fetchedUsers[0], encryptedPassword: undefined };
+  private async getUserWithoutPassword(
+    userName: string,
+    userId?: number
+  ): Promise<UserWithoutPassword | undefined> {
+    const fetchedUser = await this.getUserQuery(userName, userId);
+
+    return { ...fetchedUser, encryptedPassword: undefined };
   }
 
   private updateUserQuery(userId: number, params: UserUpdateParams): void {
